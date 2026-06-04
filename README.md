@@ -1,6 +1,8 @@
-# MarkDown Auto Preview
+# MarkDown In On Tab
 
 打开 Markdown 文件时，自动在右侧打开实时预览；切换到其他文件或标签页时，自动关闭预览。
+
+![演示效果](./images/demo.gif)
 
 ## 功能
 

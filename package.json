@@ -1,13 +1,13 @@
 {
-  "name": "markdown-auto-preview",
-  "displayName": "MarkDown Auto Preview",
+  "name": "markdown-as-one-tab",
+  "displayName": "MarkDown As One Tab",
   "description": "打开 Markdown 文件时自动在右侧打开预览，切换离开时自动关闭预览",
-  "version": "1.0.0",
-  "publisher": "B52405",
+  "version": "1.0.1",
+  "publisher": "B-52405",
   "icon": "extension/icon.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/B-52405/markdown-auto-preview"
+    "url": "https://github.com/B-52405/MarkdownAutoPreview"
   },
   "engines": {
     "vscode": "^1.120.0"
@@ -29,7 +29,7 @@
   },
   "scripts": {
     "lint": "eslint .",
-    "package": "vsce package",
+    "package": "vsce package --out ./dist/",
     "publish": "vsce publish"
   },
   "devDependencies": {

@@ -8,9 +8,21 @@ let isOpeningPreview = false;
 
 /**
  * 关闭 Markdown 预览标签页
- * 使用内置命令关闭活动编辑器组之外的所有编辑器（即右侧预览窗口）
+ * 直接遍历所有标签页组找到预览标签页并关闭（兼容左侧组已空只剩预览的场景）
  */
 async function closeMarkdownPreview() {
+	const allTabs = vscode.window.tabGroups.all.flatMap(group => group.tabs);
+	for (const tab of allTabs) {
+		const input = /** @type {any} */ (tab.input);
+		if (!input || typeof input !== 'object') continue;
+		// VS Code 内部 markdown 预览的 viewType 为 'mainThreadWebview-markdown.preview'
+		// 使用 includes 而非精确匹配以确保兼容性
+		if (input.viewType && input.viewType.includes('markdown')) {
+			await vscode.window.tabGroups.close(tab);
+			return;
+		}
+	}
+	// 兜底：如果通过 viewType 找不到，尝试用 closeEditorsInOtherGroups
 	await vscode.commands.executeCommand('workbench.action.closeEditorsInOtherGroups');
 }
 
@@ -50,11 +62,12 @@ function activate(context) {
 		})
 	);
 
-	// 监听 MD 文件关闭，清理状态
+	// 监听 MD 文件关闭，同步关闭预览并清理状态
 	context.subscriptions.push(
-		vscode.workspace.onDidCloseTextDocument((document) => {
+		vscode.workspace.onDidCloseTextDocument(async (document) => {
 			if (document.languageId === 'markdown' && activeMdUri &&
 				document.uri.toString() === activeMdUri.toString()) {
+				await closeMarkdownPreview();
 				activeMdUri = null;
 			}
 		})
